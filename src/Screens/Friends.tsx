@@ -1,44 +1,40 @@
 import React, { useState } from 'react'
-import {
-    View,
-    Button,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    FlatList,
-} from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-
+import { View, Text, TouchableOpacity, FlatList } from 'react-native'
 import { mockFriends } from '../../mockdata'
 import FriendPanel from '../components/FriendPanel'
+import Layout from '../components/Layout'
 
-const Friends = ({ navigation }) => {
-    return (
-        <SafeAreaView>
-            <View className='bg-discord-gray-2 h-full pb-3'>
-                <View className='p-4 bg-discord-gray-2  border-solid border-gray-500 border-b'>
-                    <Text className='text-white text-3xl mb-2'>Friends</Text>
-                    <View>
-                        <TouchableOpacity activeOpacity={0.5}>
-                            <View className='rounded bg-discord-gray-3 h-[28px] px-2'>
-                                <Text className='leading-[27px] text-gray-400'>
-                                    Find or start a conversation
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View className='px-4 mt-1'>
-                    <FlatList
-                        data={mockFriends}
-                        renderItem={({ item }) => (
-                            <FriendPanel navigation={navigation} {...item} />
-                        )}
-                    />
-                </View>
-            </View>
-        </SafeAreaView>
-    )
+import ServerSideBar from '../components/ServerSideBar'
+
+import DirectMessagesHeader from '../components/DirectMessagesHeader'
+
+import Chat from './Chat'
+const Friends = ({ route, navigation }) => {
+  const [selectedFriend, setSelectedFriend] = useState(mockFriends[0])
+  return (
+    <Layout>
+      <View className='flex flex-row flex-1 '>
+        <ServerSideBar />
+
+        <View className='flex-1 bg-discord-gray-2 pb-3 rounded-t-xl p-4 max-w-[67%]'>
+          <DirectMessagesHeader />
+          <FlatList
+            data={mockFriends}
+            style={{}}
+            renderItem={({ item }) => (
+              <FriendPanel
+                navigation={navigation}
+                setSelectedFriend={setSelectedFriend}
+                {...item}
+              />
+            )}
+          />
+        </View>
+
+        <Chat selectedFriend={selectedFriend} />
+      </View>
+    </Layout>
+  )
 }
 
 export default Friends
