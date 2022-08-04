@@ -4,35 +4,39 @@ import Navigation from './src/Navigation/Navigation'
 import * as SplashScreen from 'expo-splash-screen'
 import * as Font from 'expo-font'
 import { Rubik_700Bold } from '@expo-google-fonts/rubik'
+import { io } from 'socket.io-client'
 export default function App(props) {
-  const [appIsReady, setAppIsReady] = useState(false)
+    const [appIsReady, setAppIsReady] = useState(false)
 
-  useEffect(() => {
-    async function prepare() {
-      try {
-        await Font.loadAsync({ Rubik_700Bold })
-      } catch (e) {
-        console.warn(e)
-      } finally {
-        setAppIsReady(true)
-      }
+    const socket = io('ws://192.168.50.214:3000')
+
+    useEffect(() => {
+        async function prepare() {
+            try {
+                await Font.loadAsync({ Rubik_700Bold })
+            } catch (e) {
+                console.warn(e)
+            } finally {
+                setAppIsReady(true)
+                socket.emit('connection')
+            }
+        }
+        prepare()
+    }, [])
+
+    const onLayoutRootView = useCallback(async () => {
+        if (appIsReady) {
+            await SplashScreen.hideAsync()
+        }
+    }, [appIsReady])
+
+    if (!appIsReady) {
+        return null
     }
-    prepare()
-  }, [])
 
-  const onLayoutRootView = useCallback(async () => {
-    if (appIsReady) {
-      await SplashScreen.hideAsync()
-    }
-  }, [appIsReady])
-
-  if (!appIsReady) {
-    return null
-  }
-
-  return (
-    <SafeAreaProvider onLayout={onLayoutRootView}>
-      <Navigation />
-    </SafeAreaProvider>
-  )
+    return (
+        <SafeAreaProvider onLayout={onLayoutRootView}>
+            <Navigation />
+        </SafeAreaProvider>
+    )
 }

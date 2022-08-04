@@ -1,11 +1,5 @@
 import React, { memo, useState } from 'react'
-import {
-    ImageBackground,
-    TouchableHighlight,
-    View,
-    Text,
-    TouchableOpacity,
-} from 'react-native'
+import { ImageBackground, TouchableHighlight, View, Text } from 'react-native'
 import StatusIndicator from './StatusIndicator'
 
 const FriendPanel = (props) => {
