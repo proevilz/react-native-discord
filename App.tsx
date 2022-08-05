@@ -4,6 +4,7 @@ import Navigation from './src/Navigation/Navigation'
 import * as SplashScreen from 'expo-splash-screen'
 import * as Font from 'expo-font'
 import { Rubik_700Bold } from '@expo-google-fonts/rubik'
+import { io } from 'socket.io-client'
 export default function App(props) {
   const [appIsReady, setAppIsReady] = useState(false)
 
@@ -19,6 +20,21 @@ export default function App(props) {
     }
     prepare()
   }, [])
+  const socket = io('ws://192.168.50.214:3000')
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await Font.loadAsync({ Rubik_700Bold })
+      } catch (e) {
+        console.warn(e)
+      } finally {
+        setAppIsReady(true)
+        socket.emit('connection')
+      }
+    }
+    prepare()
+  }, [])
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
@@ -29,8 +45,9 @@ export default function App(props) {
   if (!appIsReady) {
     return null
   }
+
   return (
-    <SafeAreaProvider onLayout={onLayoutRootView} >
+    <SafeAreaProvider onLayout={onLayoutRootView}>
       <Navigation />
     </SafeAreaProvider>
   )

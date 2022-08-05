@@ -1,11 +1,11 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Image } from 'react-native'
 
 const StatusIndicator = (props) => {
     const color = props.bgVariant ?? '2'
     if (props.status === 1) {
         return (
-            <View className='absolute bottom-[-2px] right-[0px] z-10 h-[13px] w-[13px] rounded-full bg-green-500 border-2 border-solid border-discord-gray-2'></View>
+            <View className='absolute bottom-[-2px] right-[0px] z-10 h-[13px] w-[13px] rounded-full bg-green-500 border-2 border-solid border-discord-gray-2' />
         )
     }
     if (props.status === 2) {
@@ -17,9 +17,13 @@ const StatusIndicator = (props) => {
     }
     if (props.status === 3) {
         return (
-            <View className='absolute bottom-[-2px] right-[0px] z-10 h-[13px] w-[13px] rounded-full bg-red-500 border-2 border-solid border-discord-gray-2 flex justify-center items-center'>
-                <View className='rounded bg-discord-gray-1 h-[2px] w-[4px]'></View>
-            </View>
+            <Image
+                source={require('../../assets/images/online.svg')}
+                style={{
+                    width: 10,
+                    height: 15,
+                }}
+            />
         )
     }
     if (props.status === 4) {

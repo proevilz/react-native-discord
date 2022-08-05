@@ -10,37 +10,20 @@ import {
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import StatusIndicator from '../components/StatusIndicator'
 import Animated, {
-    useSharedValue,
     useAnimatedStyle,
-    withSpring,
     cancelAnimation,
-    interpolate,
-    Extrapolate,
-    useAnimatedGestureHandler,
     Easing,
     withTiming,
-    runOnJS,
-    runOnUI,
-    useDerivedValue,
+    getRelativeCoords,
+    useAnimatedRef,
 } from 'react-native-reanimated'
-import {
-    Gesture,
-    GestureDetector,
-    GestureHandlerRootView,
-    PanGestureHandler,
-} from 'react-native-gesture-handler'
-import RightSideBar from '../components/RightSideBar'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 
-const Chat = ({
-    selectedFriend,
-
-    setRightSideBarVisible,
-}) => {
+const Chat = ({ selectedFriend, offset, start, setRightSideBarVisible }) => {
     const screenWidth = Dimensions.get('window').width
     const { username, status } = selectedFriend
     const [localX, setLocalX] = useState(0)
-    const offset = useSharedValue(0)
-    const start = useSharedValue(0)
+
     const gesture = Gesture.Pan()
         .onBegin((e) => {
             start.value = offset.value
@@ -49,7 +32,7 @@ const Chat = ({
         .onUpdate((e) => {
             offset.value = start.value + e.translationX
         })
-        .onEnd(() => {
+        .onEnd((event) => {
             if (offset.value > screenWidth / 2) {
                 offset.value = withTiming(screenWidth - 50, {
                     easing: Easing.bezier(0.25, 0.1, 0.25, 1),
@@ -66,13 +49,6 @@ const Chat = ({
             start.value = offset.value
         })
 
-    const wrapper = (x) => {
-        setRightSideBarVisible(x > 0)
-        setLocalX(x)
-    }
-    useDerivedValue(() => {
-        runOnJS(wrapper)(offset.value)
-    })
     const animatedStyles = useAnimatedStyle(() => {
         return {
             width: screenWidth,
@@ -84,71 +60,60 @@ const Chat = ({
         }
     })
     return (
-        // <GestureHandlerRootView>
-        <>
-            <GestureDetector gesture={gesture}>
-                <Animated.View
-                    style={[animatedStyles]}
+        <GestureDetector gesture={gesture}>
+            <Animated.View
+                style={[animatedStyles]}
+                className={
+                    'bg-discord-gray-2 h-full  pb-3 z-10 absolute z-100 ' +
+                    (localX === 0 ? 'w-full' : 'rounded-t-xl')
+                }
+            >
+                <View
                     className={
-                        'bg-discord-gray-2 h-full  pb-3 z-10 absolute z-100 ' +
-                        (localX === 0 ? 'w-full' : 'rounded-t-xl')
+                        'p-4 bg-discord-gray-3 border-solid border-gray-900 border-b  flex flex-row items-center justify-between' +
+                        (localX === 0 ? '' : ' rounded-t-xl')
                     }
                 >
                     <View
                         className={
-                            'p-4 bg-discord-gray-3 border-solid border-gray-900 border-b  flex flex-row items-center justify-between' +
+                            'items-center flex flex-row' +
                             (localX === 0 ? '' : ' rounded-t-xl')
                         }
                     >
-                        <View
-                            className={
-                                'items-center flex flex-row' +
-                                (localX === 0 ? '' : ' rounded-t-xl')
-                            }
+                        <TouchableOpacity
+                            onPress={() => {
+                                // setFocused((prev) => !prev)
+                            }}
                         >
-                            <TouchableOpacity
-                                onPress={() => {
-                                    // setFocused((prev) => !prev)
-                                }}
-                            >
-                                <Ionicons
-                                    name='ios-menu-sharp'
-                                    size={24}
-                                    color='gray'
-                                />
-                            </TouchableOpacity>
-                            <Text className='text-white mb-1 ml-3 mr-5 font-bold'>
-                                <Text className='text-discord-gray-4 font-bold'>
-                                    @{'  '}
-                                </Text>
-                                {username}
-                            </Text>
-                            <View className='flex items-center pt-2'>
-                                <StatusIndicator
-                                    bgVariant={'1'}
-                                    status={status}
-                                />
-                            </View>
-                        </View>
-                        <View className='items-center flex flex-row'>
-                            <MaterialIcons
-                                name='phone-in-talk'
-                                size={20}
-                                color='gray'
-                            />
-                            <View className='mx-1' />
                             <Ionicons
-                                name='md-videocam'
-                                size={20}
+                                name='ios-menu-sharp'
+                                size={24}
                                 color='gray'
                             />
+                        </TouchableOpacity>
+                        <Text className='text-white mb-1 ml-3 mr-5 font-bold'>
+                            <Text className='text-discord-gray-4 font-bold'>
+                                @{'  '}
+                            </Text>
+                            {username}
+                        </Text>
+                        <View className='flex items-center pt-2'>
+                            <StatusIndicator bgVariant='3' status={status} />
                         </View>
                     </View>
-                    <View className='px-4 mt-1'></View>
-                </Animated.View>
-            </GestureDetector>
-        </>
-        // </GestureHandlerRootView>
+                    <View className='items-center flex flex-row'>
+                        <MaterialIcons
+                            name='phone-in-talk'
+                            size={20}
+                            color='gray'
+                        />
+                        <View className='mx-1' />
+                        <Ionicons name='md-videocam' size={20} color='gray' />
+                    </View>
+                </View>
+                <View className='px-4 mt-1'></View>
+            </Animated.View>
+        </GestureDetector>
     )
 }
 
