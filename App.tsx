@@ -8,7 +8,7 @@ export default function App(props) {
   const [appIsReady, setAppIsReady] = useState(false)
 
   useEffect(() => {
-    async function prepare() {
+    async function prepare(): Promise<void> {
       try {
         await Font.loadAsync({ Rubik_700Bold })
       } catch (e) {
@@ -29,9 +29,8 @@ export default function App(props) {
   if (!appIsReady) {
     return null
   }
-
   return (
-    <SafeAreaProvider onLayout={onLayoutRootView}>
+    <SafeAreaProvider onLayout={onLayoutRootView} >
       <Navigation />
     </SafeAreaProvider>
   )

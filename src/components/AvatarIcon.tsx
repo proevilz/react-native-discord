@@ -1,5 +1,6 @@
-import React from 'react'
+import React  from 'react'
 import { ImageBackground, View } from 'react-native'
+
 
 const AvatarIcon = (props) => {
   return (
