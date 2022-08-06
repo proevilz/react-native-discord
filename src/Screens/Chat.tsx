@@ -1,138 +1,159 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
+    View,
+    Text,
+    TouchableOpacity,
+    Dimensions,
+    StyleSheet,
 } from 'react-native'
 
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import StatusIndicator from '../components/StatusIndicator'
 import Animated, {
-  useAnimatedStyle,
-  cancelAnimation,
-  Easing,
-  withTiming,
-  getRelativeCoords,
-  useAnimatedRef,
-  interpolate,
-  Extrapolation,
-  useSharedValue,
+    useAnimatedStyle,
+    cancelAnimation,
+    Easing,
+    withTiming,
+    getRelativeCoords,
+    useAnimatedRef,
+    interpolate,
+    Extrapolation,
+    useSharedValue,
+    Extrapolate,
 } from 'react-native-reanimated'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import { UiContext } from '../context/UiContext'
 
 const Chat = ({ selectedFriend, offset, start }) => {
-  const screenWidth = Dimensions.get('window').width
-  const { username, status } = selectedFriend
-  const radius = useSharedValue(0)
+    const screenWidth = Dimensions.get('window').width
+    const { username, status } = selectedFriend
+    const { bottomTabVisible } = useContext(UiContext)
+    const gesture = Gesture.Pan()
+        .onBegin((e) => {
+            console.log(offset.value)
+            bottomTabVisible.value = true
+            start.value = offset.value
+            cancelAnimation(offset)
+        })
+        .onUpdate((e) => {
+            offset.value = start.value + e.translationX
+        })
+        .onEnd((event) => {
+            if (offset.value > screenWidth / 2) {
+                offset.value = withTiming(screenWidth - 50, {
+                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+                })
+            } else if (offset.value < -screenWidth / 2) {
+                offset.value = withTiming(-screenWidth + 50, {
+                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+                })
+            } else {
+                offset.value = withTiming(0, {
+                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+                })
+            }
 
-  const gesture = Gesture.Pan()
-    .onBegin((e) => {
-      start.value = offset.value
-      cancelAnimation(offset)
-    })
-    .onUpdate((e) => {
-      offset.value = start.value + e.translationX
-    })
-    .onEnd((event) => {
-      radius.value = offset.value !== 0 ? 12 : 0
-      console.log(offset.value)
-      if (offset.value > screenWidth / 2) {
-        offset.value = withTiming(screenWidth - 50, {
-          easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            start.value = offset.value
         })
-      } else if (offset.value < -screenWidth / 2) {
-        offset.value = withTiming(-screenWidth + 50, {
-          easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-        })
-      } else {
-        offset.value = withTiming(0, {
-          easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-        })
-      }
-      start.value = offset.value
-    })
 
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateX: offset.value,
-        },
-      ],
-    }
-  })
-  const mAnimatedStyles = useAnimatedStyle(() => {
-    return {
-      borderTopLeftRadius: radius.value,
-      borderTopRightRadius: radius.value,
-    }
-  })
-  return (
-    <GestureDetector gesture={gesture}>
-      <Animated.View
-        style={[
-          animatedStyles,
-          {
-            width: screenWidth,
-            borderTopLeftRadius: radius.value,
-            borderTopRightRadius: radius.value,
-          },
-        ]}
-        className='bg-red-500 h-full  pb-3 z-10 absolute z-100'
-      >
-        <Animated.View
-          style={[
-            {
-              backgroundColor: '#2f3136',
-              borderTopLeftRadius: radius.value,
-              borderTopRightRadius: radius.value,
-            },
-          ]}
-          className={
-            'p-4  border-solid border-gray-900 border-b  flex flex-row items-center justify-between'
-          }
-        >
-          <View className={'items-center flex flex-row'}>
-            <TouchableOpacity
-              onPress={() => {
-                // setFocused((prev) => !prev)
-              }}
+    const animatedStyles = useAnimatedStyle(() => {
+        return {
+            transform: [
+                {
+                    translateX: offset.value,
+                },
+            ],
+        }
+    })
+    const mAnimatedStyles = useAnimatedStyle(() => {
+        const radius = interpolate(
+            offset.value,
+            [-340, 0, 340],
+            [12, 0, 12],
+            Extrapolate.CLAMP
+        )
+        // if (offset.value < 0) {
+        //     bottomTabVisible.value = false
+        // }
+        return {
+            borderTopLeftRadius: Math.floor(radius),
+            borderTopRightRadius: Math.floor(radius),
+        }
+    })
+    return (
+        <GestureDetector gesture={gesture}>
+            <Animated.View
+                style={[
+                    animatedStyles,
+                    mAnimatedStyles,
+                    {
+                        width: screenWidth,
+                        height: '100%',
+                    },
+                    styles.view,
+                ]}
+                className='bg-red-500 pb-3 z-10 absolute z-100'
             >
-              <Ionicons name='ios-menu-sharp' size={24} color='gray' />
-            </TouchableOpacity>
-            <Text className='text-white mb-1 ml-3 mr-5 font-bold'>
-              <Text className='text-discord-gray-4 font-bold'>@{'  '}</Text>
-              {username}
-            </Text>
-            <View className='flex items-center pt-2'>
-              <StatusIndicator bgVariant='3' status={status} />
-            </View>
-          </View>
-          <View className='items-center flex flex-row'>
-            <MaterialIcons name='phone-in-talk' size={20} color='gray' />
-            <View className='mx-1' />
-            <Ionicons name='md-videocam' size={20} color='gray' />
-          </View>
-        </Animated.View>
-        <View className='px-4 mt-1'></View>
-      </Animated.View>
-    </GestureDetector>
-  )
+                <Animated.View
+                    style={[
+                        {
+                            backgroundColor: '#2f3136',
+                        },
+                        mAnimatedStyles,
+                    ]}
+                    className={
+                        'p-4 bg-green-500  border-solid border-gray-900 border-b  flex flex-row items-center justify-between'
+                    }
+                >
+                    <View className={'items-center flex flex-row'}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                // setFocused((prev) => !prev)
+                            }}
+                        >
+                            <Ionicons
+                                name='ios-menu-sharp'
+                                size={24}
+                                color='gray'
+                            />
+                        </TouchableOpacity>
+                        <Text className='text-white mb-1 ml-3 mr-5 font-bold'>
+                            <Text className='text-discord-gray-4 font-bold'>
+                                @{'  '}
+                            </Text>
+                            {username}
+                        </Text>
+                        <View className='flex items-center pt-2'>
+                            <StatusIndicator bgVariant='3' status={status} />
+                        </View>
+                    </View>
+                    <View className='items-center flex flex-row'>
+                        <MaterialIcons
+                            name='phone-in-talk'
+                            size={20}
+                            color='gray'
+                        />
+                        <View className='mx-1' />
+                        <Ionicons name='md-videocam' size={20} color='gray' />
+                    </View>
+                </Animated.View>
+                <View className='px-4 mt-1'></View>
+            </Animated.View>
+        </GestureDetector>
+    )
 }
 
 const styles = StyleSheet.create({
-  view: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    view: {
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
 
-    elevation: 5,
-  },
+        elevation: 5,
+    },
 })
 export default Chat

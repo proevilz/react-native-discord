@@ -17,13 +17,9 @@ const StatusIndicator = (props) => {
     }
     if (props.status === 3) {
         return (
-            <Image
-                source={require('../../assets/images/online.svg')}
-                style={{
-                    width: 10,
-                    height: 15,
-                }}
-            />
+            <View className='absolute bottom-[-2px] right-[0px] z-10 h-[13px] w-[13px] rounded-full bg-red-500 border-2 border-solid border-discord-gray-2 flex justify-center items-center'>
+                <View className='rounded bg-discord-gray-1 h-[2px] w-[4px]'></View>
+            </View>
         )
     }
     if (props.status === 4) {

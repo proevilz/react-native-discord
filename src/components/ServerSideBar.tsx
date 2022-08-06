@@ -18,11 +18,7 @@ const ServerSideBar = ({ rightSideBarVisible }) => {
         )
     }
     return (
-        <View
-            // pointerEvents={rightSideBarVisible ? 'none' : 'auto'}
-            className='w-[72px] bg-discord-gray-3 '
-            // style={{ opacity: rightSideBarVisible ? 0 : 1 }}
-        >
+        <View className='w-[72px] bg-discord-gray-3 '>
             <View className='flex items-center mb-2'>
                 <View className='flex items-center justify-center mb-2 h-[48px] w-[48px] rounded-2xl bg-[#4c5be5]'>
                     <MaterialCommunityIcons

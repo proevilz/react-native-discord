@@ -1,8 +1,10 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useContext, useState } from 'react'
 import { ImageBackground, TouchableHighlight, View, Text } from 'react-native'
+import { UiContext } from '../context/UiContext'
 import StatusIndicator from './StatusIndicator'
 
 const FriendPanel = (props) => {
+    const { setVisible } = useContext(UiContext)
     const [isPressed, setIsPressed] = useState(false)
     return (
         <TouchableHighlight
@@ -14,6 +16,7 @@ const FriendPanel = (props) => {
                     status: props.status,
                     avatar: props.avatar,
                 })
+                setVisible((prev) => !prev)
             }}
             onShowUnderlay={() => setIsPressed(true)}
             onHideUnderlay={() => setIsPressed(false)}
