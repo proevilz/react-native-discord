@@ -3,15 +3,24 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Navigation from './src/Navigation/Navigation'
 import * as SplashScreen from 'expo-splash-screen'
 import * as Font from 'expo-font'
-import { Rubik_700Bold } from '@expo-google-fonts/rubik'
+import {
+  Rubik_700Bold,
+  Rubik_800ExtraBold,
+  Rubik_900Black,
+} from '@expo-google-fonts/rubik'
 import { io } from 'socket.io-client'
+import AuthContext from './src/context/AuthContext'
 export default function App(props) {
   const [appIsReady, setAppIsReady] = useState(false)
 
   useEffect(() => {
     async function prepare(): Promise<void> {
       try {
-        await Font.loadAsync({ Rubik_700Bold })
+        await Font.loadAsync({
+          Rubik_700Bold,
+          Rubik_800ExtraBold,
+          Rubik_900Black,
+        })
       } catch (e) {
         console.warn(e)
       } finally {
@@ -48,7 +57,9 @@ export default function App(props) {
 
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
-      <Navigation />
+      <AuthContext>
+        <Navigation />
+      </AuthContext>
     </SafeAreaProvider>
   )
 }
