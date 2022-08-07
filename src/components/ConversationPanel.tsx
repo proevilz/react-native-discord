@@ -1,21 +1,24 @@
-import React, { memo, useContext, useState } from 'react'
+import React, { memo, useContext, useEffect, useState } from 'react'
 import { ImageBackground, TouchableHighlight, View, Text } from 'react-native'
+import { mockFriends } from '../../mockdata'
+import { AuthContext } from '../context/AuthContext'
 import { UiContext } from '../context/UiContext'
 import StatusIndicator from './StatusIndicator'
 
-const FriendPanel = (props) => {
+const ConversationPanel = (props) => {
     const { setVisible } = useContext(UiContext)
     const [isPressed, setIsPressed] = useState(false)
+    const { authedUser } = useContext(AuthContext)
+    const otherUser = props.users.find((userId) => userId !== authedUser.id)
+    const user = mockFriends.find((friend) => friend.id == otherUser)
+
     return (
         <TouchableHighlight
             activeOpacity={1}
             underlayColor='rgba(79, 84, 92, 0.6)'
             onPress={() => {
-                props.setSelectedFriend({
-                    username: props.username,
-                    status: props.status,
-                    avatar: props.avatar,
-                })
+                props.setSelectedConverstaion(props.id)
+                props.offset.value = 0
                 setVisible((prev) => !prev)
             }}
             onShowUnderlay={() => setIsPressed(true)}
@@ -25,11 +28,11 @@ const FriendPanel = (props) => {
             <View className='flex flex-row justify-start py-2 items-center'>
                 <View>
                     <ImageBackground
-                        source={{ uri: props.avatar }}
+                        source={{ uri: user.avatar }}
                         className='h-[30px] w-[30px] rounded-full overflow-hidden bg-white'
                         resizeMode='cover'
                     />
-                    <StatusIndicator status={props.status} />
+                    <StatusIndicator status={user.status} />
                 </View>
                 <Text
                     className={
@@ -37,11 +40,11 @@ const FriendPanel = (props) => {
                         ' ml-3 font-medium'
                     }
                 >
-                    {props.username}
+                    {user.username}
                 </Text>
             </View>
         </TouchableHighlight>
     )
 }
 
-export default memo(FriendPanel)
+export default memo(ConversationPanel)

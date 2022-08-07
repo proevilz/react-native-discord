@@ -9,8 +9,7 @@ import {
     Rubik_900Black,
 } from '@expo-google-fonts/rubik'
 import { io } from 'socket.io-client'
-import AuthContext from './src/context/AuthContext'
-import UiContext from './src/context/UiContext'
+import AuthState from './src/context/AuthContext'
 import UiState from './src/context/UiContext'
 export default function App(props) {
     const [appIsReady, setAppIsReady] = useState(false)
@@ -60,9 +59,9 @@ export default function App(props) {
     return (
         <SafeAreaProvider onLayout={onLayoutRootView}>
             <UiState>
-                <AuthContext>
+                <AuthState>
                     <Navigation />
-                </AuthContext>
+                </AuthState>
             </UiState>
         </SafeAreaProvider>
     )

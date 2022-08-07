@@ -3,7 +3,7 @@ import { FlatList, ImageBackground, View } from 'react-native'
 import { mockServers } from '../../mockdata'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-const ServerSideBar = ({ rightSideBarVisible }) => {
+const ServerSideBar = ({ tabBarHeight }) => {
     const servers = mockServers
 
     const ServerThumbnail = (props) => {
@@ -18,7 +18,10 @@ const ServerSideBar = ({ rightSideBarVisible }) => {
         )
     }
     return (
-        <View className='w-[72px] bg-discord-gray-3 '>
+        <View
+            className='w-[72px] bg-discord-gray-3'
+            style={{ marginBottom: tabBarHeight }}
+        >
             <View className='flex items-center mb-2'>
                 <View className='flex items-center justify-center mb-2 h-[48px] w-[48px] rounded-2xl bg-[#4c5be5]'>
                     <MaterialCommunityIcons
