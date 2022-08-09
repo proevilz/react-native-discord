@@ -1,12 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    FlatList,
-    Dimensions,
-} from 'react-native'
-import { conversations, mockFriends } from '../../mockdata'
+import React from 'react'
+import { View, FlatList, Dimensions } from 'react-native'
+
 import ConversationPanel from '../components/ConversationPanel'
 import Layout from '../components/Layout'
 
@@ -20,13 +14,14 @@ import Animated, {
     useAnimatedStyle,
     useSharedValue,
 } from 'react-native-reanimated'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
 
 const screenWidth = Dimensions.get('window').width
-const Friends = ({ navigation }) => {
-    const [selectedConversation, setSelectedConverstaion] = useState(
-        conversations[0].id
+const DirectMessages = ({ navigation }) => {
+    const conversations = useSelector(
+        (state: RootState) => state.chat.conversations
     )
-
     const offset = useSharedValue(0)
     const start = useSharedValue(0)
 
@@ -63,9 +58,6 @@ const Friends = ({ navigation }) => {
                                 <ConversationPanel
                                     offset={offset}
                                     navigation={navigation}
-                                    setSelectedConverstaion={
-                                        setSelectedConverstaion
-                                    }
                                     {...item}
                                 />
                             )}
@@ -73,11 +65,7 @@ const Friends = ({ navigation }) => {
                     </View>
                 </Animated.View>
 
-                <Chat
-                    selectedConversation={selectedConversation}
-                    offset={offset}
-                    start={start}
-                />
+                <Chat offset={offset} start={start} />
                 <Animated.View
                     className='w-[80%] rounded-t-xl bg-discord-gray-2 h-full absolute right-[10px]'
                     style={rAnimatedStyles}
@@ -89,4 +77,4 @@ const Friends = ({ navigation }) => {
     )
 }
 
-export default Friends
+export default DirectMessages

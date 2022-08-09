@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import {
     View,
     Text,
@@ -19,6 +19,7 @@ import Animated, {
     useSharedValue,
     Extrapolate,
     runOnJS,
+    useDerivedValue,
 } from 'react-native-reanimated'
 import {
     FlatList,
@@ -31,28 +32,41 @@ import { AuthContext } from '../context/AuthContext'
 import { mockFriends, conversations, mockChat } from '../../mockdata'
 import ChatMessage from '../components/ChatMessage'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useSelector, useDispatch } from 'react-redux'
+import { show, hide } from '../slices/bottomTabsSlice'
+import { RootState, selectors } from '../store'
+import ChatInput from '../components/ChatInput'
 
-const Chat = ({ selectedConversation, offset, start }) => {
+const Chat = ({ offset, start }) => {
     const screenWidth = Dimensions.get('window').width
     const screenHeight = Dimensions.get('window').height
-    const { authedUser } = useContext(AuthContext)
-    const conversation = conversations.find(
-        (conversation) => conversation.id === selectedConversation
-    )
-    const otherUser = conversation.users.find(
-        (userId) => userId !== authedUser.id
-    )
-    const user = mockFriends.find((friend) => friend.id == otherUser)
-    const { username, status } = user
-    const { bottomTabVisible } = useContext(UiContext)
-    const isPressed = useSharedValue(false)
-    const updatePressed = (value) => (isPressed.value = value)
+    const { findChatParticipant, findConversation } = selectors
+    const conversation = useSelector(findConversation)
 
+    const user = useSelector(findChatParticipant)
+
+    const dispatch = useDispatch()
+    const isPressed = useSharedValue(false)
+    const [scrollEnabled, setScrollEnabled] = useState(true)
+    const updatePressed = (value) => (isPressed.value = value)
+    const handleScroller = (val) => {
+        if (val != 0) {
+            setScrollEnabled(false)
+        } else {
+            setScrollEnabled(true)
+        }
+    }
+    const updateBottomTabsVisibility = (value) => {
+        if (value) {
+            return dispatch(show())
+        }
+        return dispatch(hide())
+    }
     const gesture = Gesture.Pan()
         .onBegin((e) => {
             start.value = offset.value
             isPressed.value = true
-            cancelAnimation(bottomTabVisible)
+            // cancelAnimation(bottomTabVisible)
             cancelAnimation(offset)
         })
         .onUpdate((e) => {
@@ -73,7 +87,6 @@ const Chat = ({ selectedConversation, offset, start }) => {
                 })
             }
             start.value = offset.value
-            // isPressed.value = false
         })
         .onFinalize(() => {
             runOnJS(updatePressed)(false)
@@ -83,10 +96,12 @@ const Chat = ({ selectedConversation, offset, start }) => {
 
     const animatedStyles = useAnimatedStyle(() => {
         if (offset.value == 340) {
-            bottomTabVisible.value = true
+            runOnJS(updateBottomTabsVisibility)(true)
         } else {
-            bottomTabVisible.value = false
+            runOnJS(updateBottomTabsVisibility)(false)
         }
+        runOnJS(handleScroller)(offset.value)
+
         return {
             transform: [
                 {
@@ -133,6 +148,7 @@ const Chat = ({ selectedConversation, offset, start }) => {
         }
     })
 
+    const flatList = React.useRef(null)
     return (
         <GestureDetector gesture={gesture}>
             <Animated.View
@@ -158,7 +174,9 @@ const Chat = ({ selectedConversation, offset, start }) => {
                     <View className={'items-center flex flex-row'}>
                         <TouchableOpacity
                             onPress={() => {
-                                // setFocused((prev) => !prev)
+                                offset.value = withTiming(
+                                    offset.value == 0 ? 340 : 0
+                                )
                             }}
                         >
                             <Ionicons
@@ -171,10 +189,13 @@ const Chat = ({ selectedConversation, offset, start }) => {
                             <Text className='text-discord-gray-4 font-bold'>
                                 @{'  '}
                             </Text>
-                            {username}
+                            {user.username}
                         </Text>
                         <View className='flex items-center pt-2'>
-                            <StatusIndicator bgVariant='3' status={status} />
+                            <StatusIndicator
+                                bgVariant='3'
+                                status={user.status}
+                            />
                         </View>
                     </View>
                     <View className='items-center flex flex-row'>
@@ -192,39 +213,27 @@ const Chat = ({ selectedConversation, offset, start }) => {
                     keyboardVerticalOffset={57}
                     behavior='padding'
                 >
-                    <View className='justify-between bg-discord-gray-2 w-full h-full '>
+                    <View className='justify-between bg-discord-gray-2 w-full h-full  '>
                         <FlatList
-                            inverted={true}
-                            data={mockChat}
-                            className='h-[50px]'
+                            scrollEnabled={scrollEnabled}
+                            data={conversation.messages}
+                            className='h-[50px] px-2'
+                            // inverted={true}
                             renderItem={({ item }) => (
                                 <ChatMessage message={item} key={item.id} />
                             )}
+                            ref={flatList}
+                            onContentSizeChange={() => {
+                                flatList.current.scrollToEnd()
+                            }}
+                            onLayout={() => {
+                                flatList.current.scrollToEnd()
+                            }}
                         />
-                        <Animated.View className='flex justify-between pt-3 w-full flex-row px-3 border-t border-gray-900 bg-discord-gray-5'>
-                            <TouchableOpacity>
-                                <View className='rounded-full bg-discord-gray-3 w-[40px] h-[40px] mr-2 flex items-center justify-center'>
-                                    <Text className='text-gray-500 mb-1 text-2xl font-light'>
-                                        +
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <View className='rounded-full bg-discord-gray-3 w-[40px] h-[40px] mr-2 flex items-center justify-center'>
-                                    <MaterialCommunityIcons
-                                        name='gift'
-                                        size={20}
-                                        color='gray'
-                                    />
-                                </View>
-                            </TouchableOpacity>
-                            <TextInput
-                                keyboardAppearance='dark'
-                                className='bg-discord-gray-3 p-2 py-3 rounded-full flex-1 px-4 text-white'
-                                placeholder={`Message @${username}`}
-                                placeholderTextColor='gray'
-                            />
-                        </Animated.View>
+                        <ChatInput
+                            conversationId={conversation.id}
+                            user={user}
+                        />
                     </View>
                 </KeyboardAvoidingView>
             </Animated.View>

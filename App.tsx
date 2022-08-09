@@ -11,6 +11,9 @@ import {
 import { io } from 'socket.io-client'
 import AuthState from './src/context/AuthContext'
 import UiState from './src/context/UiContext'
+import { store } from './src/store'
+import { Provider } from 'react-redux'
+
 export default function App(props) {
     const [appIsReady, setAppIsReady] = useState(false)
 
@@ -57,12 +60,14 @@ export default function App(props) {
     }
 
     return (
-        <SafeAreaProvider onLayout={onLayoutRootView}>
-            <UiState>
-                <AuthState>
-                    <Navigation />
-                </AuthState>
-            </UiState>
-        </SafeAreaProvider>
+        <Provider store={store}>
+            <SafeAreaProvider onLayout={onLayoutRootView}>
+                <UiState>
+                    <AuthState>
+                        <Navigation />
+                    </AuthState>
+                </UiState>
+            </SafeAreaProvider>
+        </Provider>
     )
 }

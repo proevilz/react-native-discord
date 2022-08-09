@@ -8,28 +8,25 @@ import {
 import Profile from '../Screens/Profile'
 import TabBarIcon from '../components/TabBarIcon'
 import ChatStack from './ChatStack'
-import Friends from '../Screens/Friends'
-import { UiContext } from '../context/UiContext'
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
-import Animated, {
-    SlideInUp,
-    SlideInDown,
-    SlideOutDown,
-    SlideOutUp,
-    Layout,
-    useAnimatedStyle,
-    withSpring,
-    withTiming,
-} from 'react-native-reanimated'
+import DirectMessages from '../Screens/DirectMessages'
+
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
+import { useSelector, useDispatch } from 'react-redux'
+import { show, hide } from '../slices/bottomTabsSlice'
+import type { RootState } from '../store'
+
 const Tab = createBottomTabNavigator()
 
 const Navigation = () => {
-    const { bottomTabVisible, visible } = React.useContext(UiContext)
+    const bottomTabVisible = useSelector(
+        (state: RootState) => state.bottomTabs.visible
+    )
+
     const animatedStyles = useAnimatedStyle(() => {
         return {
             transform: [
                 {
-                    translateY: withTiming(bottomTabVisible.value ? 0 : 80, {
+                    translateY: withTiming(bottomTabVisible ? 0 : 80, {
                         duration: 200,
                     }),
                 },
@@ -62,10 +59,10 @@ const Navigation = () => {
                     </Animated.View>
                 )}
             >
-                <Tab.Screen name='Home' component={Friends} />
-                <Tab.Screen name='friends' component={ChatStack} />
-                <Tab.Screen name='search' component={ChatStack} />
-                <Tab.Screen name='mentions' component={ChatStack} />
+                <Tab.Screen name='Home' component={DirectMessages} />
+                <Tab.Screen name='friends' component={Profile} />
+                <Tab.Screen name='search' component={Profile} />
+                <Tab.Screen name='mentions' component={Profile} />
                 <Tab.Screen name='Profile' component={Profile} />
             </Tab.Navigator>
         </NavigationContainer>

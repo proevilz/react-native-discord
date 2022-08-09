@@ -1,25 +1,25 @@
 import React, { memo, useContext, useEffect, useState } from 'react'
 import { ImageBackground, TouchableHighlight, View, Text } from 'react-native'
+import { withTiming } from 'react-native-reanimated'
+import { useDispatch, useSelector } from 'react-redux'
 import { mockFriends } from '../../mockdata'
-import { AuthContext } from '../context/AuthContext'
-import { UiContext } from '../context/UiContext'
+import { selectors } from '../store'
+import { selectConversation } from '../slices/chatSlice'
+import { RootState } from '../store'
 import StatusIndicator from './StatusIndicator'
 
 const ConversationPanel = (props) => {
-    const { setVisible } = useContext(UiContext)
     const [isPressed, setIsPressed] = useState(false)
-    const { authedUser } = useContext(AuthContext)
-    const otherUser = props.users.find((userId) => userId !== authedUser.id)
-    const user = mockFriends.find((friend) => friend.id == otherUser)
-
+    const { findConversationUser } = selectors
+    const user = useSelector((state) => findConversationUser(state, props.id))
+    const dispatch = useDispatch()
     return (
         <TouchableHighlight
             activeOpacity={1}
             underlayColor='rgba(79, 84, 92, 0.6)'
             onPress={() => {
-                props.setSelectedConverstaion(props.id)
-                props.offset.value = 0
-                setVisible((prev) => !prev)
+                dispatch(selectConversation({ conversationId: props.id }))
+                props.offset.value = withTiming(0)
             }}
             onShowUnderlay={() => setIsPressed(true)}
             onHideUnderlay={() => setIsPressed(false)}
@@ -46,5 +46,5 @@ const ConversationPanel = (props) => {
         </TouchableHighlight>
     )
 }
-
-export default memo(ConversationPanel)
+export default ConversationPanel
+// export default memo(ConversationPanel)
