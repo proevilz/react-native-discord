@@ -2,15 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, View, TextInput, Text } from 'react-native'
 
-import Animated, {
-  Extrapolation,
-  FadeOutLeft,
-  interpolate,
-  SlideOutLeft,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated'
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import SendMessage from './icons/SendMessage'
 import { AntDesign } from '@expo/vector-icons'
 import { useSelector, useDispatch } from 'react-redux'
@@ -110,43 +102,43 @@ const ChatInput = ({ user, conversationId }) => {
   })
 
   return (
-    <Animated.View className='flex justify-between pt-3 w-full flex-row px-3 border-t border-gray-900 bg-discord-gray-5 max-h-[50px]'>
+    <Animated.View className="flex justify-between pt-3 w-full flex-row px-3 border-t border-gray-900 bg-discord-gray-5 max-h-[50px]">
       <Animated.View
         style={caretAnimatedStyles}
-        className='flex items-center justify-center'
+        className="flex items-center justify-center"
       >
         <TouchableOpacity onPress={() => setOpen((prev) => !prev)}>
-          <AntDesign name='right' size={20} color='gray' />
+          <AntDesign name="right" size={20} color="gray" />
         </TouchableOpacity>
       </Animated.View>
 
-      <Animated.View style={[leftAnimatedStyles]} className='flex flex-row'>
+      <Animated.View style={[leftAnimatedStyles]} className="flex flex-row">
         <TouchableOpacity>
-          <View className='rounded-full bg-discord-gray-3 w-[40px] h-[40px] mr-2 flex items-center justify-center'>
-            <Text className='text-gray-500 mb-1 text-2xl font-light'>+</Text>
+          <View className="rounded-full bg-discord-gray-3 w-[40px] h-[40px] mr-2 flex items-center justify-center">
+            <Text className="text-gray-500 mb-1 text-2xl font-light">+</Text>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity>
-          <View className='rounded-full bg-discord-gray-3 w-[40px] h-[40px] mr-2 flex items-center justify-center'>
-            <MaterialCommunityIcons name='gift' size={20} color='gray' />
+          <View className="rounded-full bg-discord-gray-3 w-[40px] h-[40px] mr-2 flex items-center justify-center">
+            <MaterialCommunityIcons name="gift" size={20} color="gray" />
           </View>
         </TouchableOpacity>
       </Animated.View>
 
       <TextInput
         onChange={({ nativeEvent }) => setInputValue(nativeEvent.text)}
-        keyboardType='twitter'
-        value={inputValue}
-        keyboardAppearance='dark'
-        className='bg-discord-gray-3 p-2 py-3 rounded-full  flex-1 px-4 text-white'
+        keyboardType="twitter"
+        defaultValue={inputValue}
+        keyboardAppearance="dark"
+        className="bg-discord-gray-3 p-2 py-3 rounded-full  flex-1 px-4 text-white"
         placeholder={`Message @${user.username}`}
-        placeholderTextColor='gray'
+        placeholderTextColor="gray"
       />
       <Animated.View style={rightAnimatedStyles}>
         <TouchableOpacity onPress={handleSubmit}>
-          <View className='rounded-full bg-[#5865f2] w-[40px] h-[40px] ml-2 flex items-center justify-center pl-1'>
-            <SendMessage className='border border-green-500' />
+          <View className="rounded-full bg-[#5865f2] w-[40px] h-[40px] ml-2 flex items-center justify-center pl-1">
+            <SendMessage className="border border-green-500" />
           </View>
         </TouchableOpacity>
       </Animated.View>
