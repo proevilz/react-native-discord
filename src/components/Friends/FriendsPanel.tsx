@@ -2,14 +2,20 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons'
 import React from 'react'
 import { View, Text, ImageBackground } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useDispatch } from 'react-redux'
 import { statusIdToString } from '../../utils'
 import StatusIndicator from '../StatusIndicator'
-
-const FriendsPanel = ({ username, avatar, status }) => {
+import { openActionSheet } from '../../slices/uiSlice'
+const FriendsPanel = ({ id, username, avatar, status }) => {
+  const dispatch = useDispatch()
   return (
     <View className="mb-4">
       <View className="flex-row justify-between items-center">
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            dispatch(openActionSheet({ id, username, avatar, status }))
+          }
+        >
           <View className="flex-row">
             <View>
               <ImageBackground

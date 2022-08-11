@@ -26,12 +26,9 @@ import {
   Gesture,
   GestureDetector,
 } from 'react-native-gesture-handler'
-import { UiContext } from '../context/UiContext'
 
-import { AuthContext } from '../context/AuthContext'
-import { mockFriends, conversations, mockChat } from '../../mockdata'
 import ChatMessage from '../components/ChatMessage'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+
 import { useSelector, useDispatch } from 'react-redux'
 import { show, hide } from '../slices/bottomTabsSlice'
 import { RootState, selectors } from '../store'

@@ -13,6 +13,9 @@ import ActionSheet from '../components/ActionSheet'
 
 const Friends = ({ route }) => {
   const friendsList = useSelector((state: RootState) => state.auth.friends)
+  const actionSheetOpen = useSelector(
+    (state: RootState) => state.ui.actionSheetOpen
+  )
   return (
     <Layout routeName={route.name}>
       <View className="bg-discord-gray-5 h-10 px-4 flex-row items-center w-full ">
@@ -50,7 +53,7 @@ const Friends = ({ route }) => {
         />
       </View>
 
-      <ActionSheet />
+      {actionSheetOpen && <ActionSheet />}
     </Layout>
   )
 }
