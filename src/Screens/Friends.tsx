@@ -9,12 +9,13 @@ import { RootState, selectors } from '../store'
 import PhonePlus from '../components/icons/PhonePlus'
 import Layout from '../components/Layout'
 import FriendsPanel from '../components/Friends/FriendsPanel'
+import ActionSheet from '../components/ActionSheet'
 
-const Friends = ({}) => {
+const Friends = ({ route }) => {
   const friendsList = useSelector((state: RootState) => state.auth.friends)
   return (
-    <Layout>
-      <View className="bg-discord-gray-3 h-10 px-4 flex-row items-center w-full ">
+    <Layout routeName={route.name}>
+      <View className="bg-discord-gray-5 h-10 px-4 flex-row items-center w-full ">
         <View className="flex-1 w-full" />
         <View className="flex-1  w-full">
           <Text className="text-white font-bold text-lg text-center">
@@ -41,13 +42,15 @@ const Friends = ({}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View className="bg-discord-gray-5 flex-1">
+      <View className="bg-discord-gray-2 flex-1 p-2 pt-4">
         <FlatList
           data={friendsList}
           className="h-[50px] px-2"
           renderItem={({ item }) => <FriendsPanel {...item} />}
         />
       </View>
+
+      <ActionSheet />
     </Layout>
   )
 }

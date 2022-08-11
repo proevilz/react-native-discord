@@ -43,8 +43,8 @@ const Navigation = () => {
           ),
           tabBarShowLabel: false,
           tabBarStyle: {
-            backgroundColor: '#17191c',
-            borderTopColor: '#17191c',
+            backgroundColor: '#18191c',
+            borderTopColor: '#18191c',
             position: 'absolute',
           },
 
