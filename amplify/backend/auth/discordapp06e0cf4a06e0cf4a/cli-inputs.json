@@ -1,0 +1,73 @@
+{
+  "version": "1",
+  "cognitoConfig": {
+    "identityPoolName": "discordapp06e0cf4a_identitypool_06e0cf4a",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "discor06e0cf4a",
+    "userPoolName": "discordapp06e0cf4a_userpool_06e0cf4a",
+    "autoVerifiedAttributes": [
+      "email"
+    ],
+    "mfaConfiguration": "OPTIONAL",
+    "mfaTypes": [
+      "SMS Text Message",
+      "TOTP"
+    ],
+    "smsAuthenticationMessage": "Your Discord authentication code is: '{####}'",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Verify your Discord account",
+    "emailVerificationMessage": "Your verification code is {####}",
+    "defaultPasswordPolicy": true,
+    "passwordPolicyMinLength": "16",
+    "passwordPolicyCharacters": [
+      "Requires Lowercase",
+      "Requires Uppercase",
+      "Requires Numbers",
+      "Requires Symbols"
+    ],
+    "requiredAttributes": [
+      "email",
+      "nickname",
+      "updated_at"
+    ],
+    "aliasAttributes": [],
+    "userpoolClientGenerateSecret": false,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientWriteAttributes": [
+      "email",
+      "nickname",
+      "updated_at"
+    ],
+    "userpoolClientReadAttributes": [
+      "email",
+      "nickname",
+      "updated_at"
+    ],
+    "userpoolClientLambdaRole": "discor06e0cf4a_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": true,
+    "sharedId": "06e0cf4a",
+    "resourceName": "discordapp06e0cf4a06e0cf4a",
+    "authSelections": "identityPoolAndUserPool",
+    "useDefault": "manual",
+    "thirdPartyAuth": false,
+    "usernameAttributes": [
+      "email"
+    ],
+    "userPoolGroups": true,
+    "adminQueries": true,
+    "triggers": {
+      "PostConfirmation": [
+        "add-to-group"
+      ]
+    },
+    "hostedUI": false,
+    "userPoolGroupList": [
+      "users",
+      "admins"
+    ],
+    "adminQueryGroup": "admins",
+    "serviceName": "Cognito",
+    "usernameCaseSensitive": false,
+    "useEnabledMfas": true
+  }
+}

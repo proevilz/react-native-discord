@@ -10,6 +10,8 @@ const Layout = (props) => {
         'flex-1 ' +
         (props.routeName === 'friends'
           ? 'bg-discord-gray-5'
+          : props.routeName === 'Welcome'
+          ? 'bg-discord-gray-2'
           : 'bg-discord-gray-3')
       }
     >

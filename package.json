@@ -10,6 +10,8 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@aws-amplify/api": "^4.0.48",
+    "@aws-amplify/core": "^4.6.1",
     "@expo-google-fonts/rubik": "^0.2.2",
     "@expo/vector-icons": "^13.0.0",
     "@react-navigation/bottom-tabs": "^6.3.2",
@@ -34,7 +36,8 @@
     "react-native-uuid": "^2.0.1",
     "react-native-web": "0.17.7",
     "react-redux": "^8.0.2",
-    "socket.io-client": "^4.5.1"
+    "socket.io-client": "^4.5.1",
+    "@react-native-async-storage/async-storage": "~1.17.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

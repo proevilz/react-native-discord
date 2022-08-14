@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/bottom-tabs'
 import Profile from '../Screens/Profile'
 import TabBarIcon from '../components/TabBarIcon'
-import ChatStack from './ChatStack'
+import ChatStack from './AuthStack'
 import DirectMessages from '../Screens/DirectMessages'
 
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
@@ -19,6 +19,7 @@ import Friends from '../Screens/Friends'
 const Tab = createBottomTabNavigator()
 
 const Navigation = () => {
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
   const bottomTabVisible = useSelector(
     (state: RootState) => state.bottomTabs.visible
   )
@@ -36,32 +37,36 @@ const Navigation = () => {
   })
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={route.name} color={color} focused={focused} />
-          ),
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            backgroundColor: '#18191c',
-            borderTopColor: '#18191c',
-            position: 'absolute',
-          },
+      {isLoggedIn ? (
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={route.name} color={color} focused={focused} />
+            ),
+            tabBarShowLabel: false,
+            tabBarStyle: {
+              backgroundColor: '#18191c',
+              borderTopColor: '#18191c',
+              position: 'absolute',
+            },
 
-          headerShown: false,
-        })}
-        tabBar={(props) => (
-          <Animated.View style={animatedStyles}>
-            <BottomTabBar {...props} />
-          </Animated.View>
-        )}
-      >
-        <Tab.Screen name="Home" component={DirectMessages} />
-        <Tab.Screen name="friends" component={Friends} />
-        <Tab.Screen name="search" component={Profile} />
-        <Tab.Screen name="mentions" component={Profile} />
-        <Tab.Screen name="Profile" component={Profile} />
-      </Tab.Navigator>
+            headerShown: false,
+          })}
+          tabBar={(props) => (
+            <Animated.View style={animatedStyles}>
+              <BottomTabBar {...props} />
+            </Animated.View>
+          )}
+        >
+          <Tab.Screen name="Home" component={DirectMessages} />
+          <Tab.Screen name="friends" component={Friends} />
+          <Tab.Screen name="search" component={Profile} />
+          <Tab.Screen name="mentions" component={Profile} />
+          <Tab.Screen name="Profile" component={Profile} />
+        </Tab.Navigator>
+      ) : (
+        <ChatStack />
+      )}
     </NavigationContainer>
   )
 }

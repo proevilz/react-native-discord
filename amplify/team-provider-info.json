@@ -1,0 +1,33 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-discordapp-dev-132903-authRole",
+      "UnauthRoleArn": "arn:aws:iam::658076343846:role/amplify-discordapp-dev-132903-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::658076343846:role/amplify-discordapp-dev-132903-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-discordapp-dev-132903-deployment",
+      "UnauthRoleName": "amplify-discordapp-dev-132903-unauthRole",
+      "StackName": "amplify-discordapp-dev-132903",
+      "StackId": "arn:aws:cloudformation:eu-west-2:658076343846:stack/amplify-discordapp-dev-132903/afbdc000-1bcc-11ed-9563-02c4a93e9c88",
+      "AmplifyAppId": "d3gxx6q7cz4wvb",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-discordapp-dev-132903-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "discordapp06e0cf4a06e0cf4a": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "discordapp06e0cf4a06e0cf4aPostConfirmation": {
+          "GROUP": "users",
+          "deploymentBucketName": "amplify-discordapp-dev-132903-deployment",
+          "s3Key": "amplify-builds/discordapp06e0cf4a06e0cf4aPostConfirmation-70613654705531323745-build.zip"
+        },
+        "AdminQueries9758219f": {
+          "deploymentBucketName": "amplify-discordapp-dev-132903-deployment",
+          "s3Key": "amplify-builds/AdminQueries9758219f-5a4d6872437548613761-build.zip"
+        }
+      }
+    }
+  }
+}
