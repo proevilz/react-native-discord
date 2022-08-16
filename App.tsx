@@ -36,20 +36,6 @@ export default function App(props) {
   }, [])
   // const socket = io('ws://192.168.50.214:3000')
 
-  useEffect(() => {
-    async function prepare() {
-      try {
-        await Font.loadAsync({ Rubik_700Bold })
-      } catch (e) {
-        console.warn(e)
-      } finally {
-        setAppIsReady(true)
-        // socket.emit('connection')
-      }
-    }
-    prepare()
-  }, [])
-
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync()

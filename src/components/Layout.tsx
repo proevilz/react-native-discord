@@ -1,22 +1,36 @@
 import React from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { Edge, SafeAreaView } from 'react-native-safe-area-context'
 
-const Layout = (props) => {
+interface IProps {
+  bottomInset: boolean
+  routeName: string
+  children?: React.ReactNode | React.ReactNode[]
+}
+const Layout = (props: IProps) => {
+  const includeBottom = props.bottomInset ? 'bottom' : undefined
+  const authScreens = ['Welcome', 'Login', 'Register', 'RegisterSecond']
   return (
     <View
       className={
         'flex-1 ' +
         (props.routeName === 'friends'
           ? 'bg-discord-gray-5'
-          : props.routeName === 'Welcome'
+          : authScreens.includes(props.routeName)
           ? 'bg-discord-gray-2'
           : 'bg-discord-gray-3')
       }
     >
       <StatusBar style="light" />
-      <SafeAreaView edges={['right', 'top', 'left']} style={{ flex: 1 }}>
+      <SafeAreaView
+        edges={
+          props.bottomInset
+            ? ['right', 'top', 'left', 'bottom']
+            : ['right', 'top', 'left']
+        }
+        style={{ flex: 1 }}
+      >
         {props.children}
       </SafeAreaView>
     </View>

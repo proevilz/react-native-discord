@@ -70,6 +70,7 @@ const TabBarIcon = (props) => {
   if (name === 'profile') {
     return <AvatarIcon focused={props.focused} />
   }
+  return <></>
 }
 
 export default TabBarIcon

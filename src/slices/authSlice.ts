@@ -43,15 +43,28 @@ const initialState = {
       status: 1,
     },
   ],
+  registration: {
+    email: '',
+    password: '',
+    username: '',
+    signUpError: {},
+  },
 }
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    updateRegistration: (state, payload) => {
+      state.registration = payload.payload
+    },
+    updateUsername: (state, payload) => {
+      state.registration.username = payload.payload
+    },
+  },
 })
 
 // Action creators are generated for each case reducer function
-export const {} = authSlice.actions
+export const { updateRegistration, updateUsername } = authSlice.actions
 
 export default authSlice.reducer

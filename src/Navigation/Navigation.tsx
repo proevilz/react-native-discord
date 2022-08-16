@@ -1,5 +1,4 @@
 import * as React from 'react'
-
 import { NavigationContainer } from '@react-navigation/native'
 import {
   BottomTabBar,
@@ -7,18 +6,19 @@ import {
 } from '@react-navigation/bottom-tabs'
 import Profile from '../Screens/Profile'
 import TabBarIcon from '../components/TabBarIcon'
-import ChatStack from './AuthStack'
+import AuthStack from './AuthStack'
 import DirectMessages from '../Screens/DirectMessages'
-
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
-import { useSelector, useDispatch } from 'react-redux'
-import { show, hide } from '../slices/bottomTabsSlice'
+import { useSelector } from 'react-redux'
+
 import type { RootState } from '../store'
 import Friends from '../Screens/Friends'
+import { Hub } from '@aws-amplify/core'
+import { hubListener } from '../utils'
 
 const Tab = createBottomTabNavigator()
-
 const Navigation = () => {
+  Hub.listen('auth', hubListener)
   const [isLoggedIn, setIsLoggedIn] = React.useState(false)
   const bottomTabVisible = useSelector(
     (state: RootState) => state.bottomTabs.visible
@@ -65,7 +65,7 @@ const Navigation = () => {
           <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
       ) : (
-        <ChatStack />
+        <AuthStack />
       )}
     </NavigationContainer>
   )

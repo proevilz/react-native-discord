@@ -1,9 +1,10 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Friends from '../Screens/DirectMessages'
-import Chat from '../Screens/Chat'
-import Welcome from '../Screens/auth/Welcome'
 
+import Register from '../Screens/auth/Register'
+import Welcome from '../Screens/auth/Welcome'
+import Login from '../Screens/auth/Login'
+import RegisterSecond from '../Screens/auth/RegisterSecond'
 const Stack = createNativeStackNavigator()
 
 const AuthStack = () => {
@@ -14,6 +15,9 @@ const AuthStack = () => {
       }}
     >
       <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="RegisterSecond" component={RegisterSecond} />
     </Stack.Navigator>
   )
 }
