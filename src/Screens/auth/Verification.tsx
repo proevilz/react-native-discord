@@ -17,7 +17,7 @@ interface IFormState {
   error: string | null
   value: string
 }
-const RegisterSecond = ({ route, navigation }: Props) => {
+const Verification = ({ route, navigation }: Props) => {
   const registrationData = useSelector(
     (state: RootState) => state.auth.registration
   )
@@ -28,41 +28,15 @@ const RegisterSecond = ({ route, navigation }: Props) => {
   })
   const [loading, setLoading] = useState(false)
   const handleNext = async () => {
-    if (!form.value || !form.value.length || form.value.length > 20) {
-      setForm((prev) => ({
-        ...prev,
-        error: 'Username must be between 3 - 20 characters',
-      }))
-    } else if (form.value && !isAlphanumeric(form.value)) {
-      setForm((prev) => ({
-        ...prev,
-        error: 'Username must only contain a-z and 0-9 type characters',
-      }))
-    } else {
-      setLoading(true)
-      dispatch(updateUsername(form.value))
+    setLoading(true)
+    if (form.value.trim() !== '') {
+      try {
+        await Auth.confirmSignUp(registrationData.email, form.value)
 
-      if (registrationData.email && registrationData.password && form.value) {
-        try {
-          const signup = await Auth.signUp({
-            username: registrationData.email,
-            password: registrationData.password,
-            attributes: {
-              nickname: form.value,
-              updated_at: new Date().valueOf().toString(),
-            },
-            autoSignIn: {
-              enabled: true,
-            },
-          })
-
-          setLoading(false)
-          if (signup.user) {
-            navigation.navigate('Verification')
-          }
-        } catch (error) {
-          setLoading(false)
-        }
+        setLoading(false)
+      } catch (error) {
+        console.log('Confirm error ', error)
+        setLoading(false)
       }
     }
   }
@@ -82,20 +56,26 @@ const RegisterSecond = ({ route, navigation }: Props) => {
             fontFamily: 'Rubik_700Bold',
           }}
         >
-          Enter a username
+          Verify your account
+        </Text>
+        <Text className="text-white mt-5">
+          Check your email inbox for a verification code.
         </Text>
       </View>
       <View className="w-full px-4 mt-5">
-        <Text className="text-discord-gray-4 mb-2 font-bold">USERNAME</Text>
+        <Text className="text-discord-gray-4 mb-2 font-bold">
+          Verfification code
+        </Text>
         <TextInput
-          placeholder="Username"
+          placeholder="Code"
           className={
             'p-4 bg-discord-gray-1 rounded text-white border ' +
             (form.error ? ' border-red-500' : '')
           }
           placeholderTextColor="gray"
           keyboardAppearance="dark"
-          returnKeyType="next"
+          returnKeyType="done"
+          keyboardType="numeric"
           defaultValue={form.value}
           onChangeText={(text: string) =>
             setForm((prev) => ({
@@ -121,7 +101,7 @@ const RegisterSecond = ({ route, navigation }: Props) => {
             {loading ? (
               <ActivityIndicator size="small" color="white" />
             ) : (
-              <Text className="text-center text-white font-bold">Next</Text>
+              <Text className="text-center text-white font-bold">Confirm</Text>
             )}
           </View>
         </TouchableOpacity>
@@ -130,4 +110,4 @@ const RegisterSecond = ({ route, navigation }: Props) => {
   )
 }
 
-export default RegisterSecond
+export default Verification

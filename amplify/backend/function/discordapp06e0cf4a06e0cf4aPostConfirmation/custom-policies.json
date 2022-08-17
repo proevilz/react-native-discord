@@ -1,6 +1,13 @@
 [
   {
-    "Action": [],
-    "Resource": []
+    "Effect": "Allow",
+    "Action": [
+      "cognito-idp:AdminAddUserToGroup",
+      "cognito-idp:CreateGroup",
+      "cognito-idp:GetGroup"
+    ],
+    "Resource": [
+      "arn:aws:cognito-idp:eu-west-2:658076343846:userpool/eu-west-2_L1DhotQim"
+    ]
   }
 ]

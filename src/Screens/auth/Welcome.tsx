@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Layout from '../../components/Layout'
 
 const Welcome = ({ route, navigation }) => {
   return (
-    <Layout routeName={route.name} includeBottom>
+    <Layout routeName={route.name} bottomInset>
       <View className="flex-1 bg-discord-gray-2 items-center justify-between">
         <View className="w-full  items-center">
           <Image

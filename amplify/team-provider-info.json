@@ -14,12 +14,11 @@
     },
     "categories": {
       "auth": {
-        "discordapp06e0cf4a06e0cf4a": {},
-        "userPoolGroups": {}
+        "userPoolGroups": {},
+        "discordapp06e0cf4a06e0cf4a": {}
       },
       "function": {
         "discordapp06e0cf4a06e0cf4aPostConfirmation": {
-          "GROUP": "users",
           "deploymentBucketName": "amplify-discordapp-dev-132903-deployment",
           "s3Key": "amplify-builds/discordapp06e0cf4a06e0cf4aPostConfirmation-70613654705531323745-build.zip"
         },

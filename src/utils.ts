@@ -1,6 +1,6 @@
 import { HubCallback, HubCapsule } from '@aws-amplify/core'
 import isEmail from 'validator/lib/isEmail'
-
+import * as RootNavigation from '../src/Navigation/RootNavigation'
 export const statusIdToString = (status: number) => {
   switch (status) {
     case 1:
@@ -81,6 +81,7 @@ export const validateField = ({ form, setForm }: IValidateField): boolean => {
 export const hubListener = (data: HubCapsule) => {
   switch (data.payload.event) {
     case 'signIn':
+      console.log('sign in! ', data.payload.data)
       break
     case 'signUp':
       break
@@ -97,8 +98,10 @@ export const hubListener = (data: HubCapsule) => {
     case 'tokenRefresh_failure':
       break
     case 'autoSignIn':
+      console.log('autoSignIn')
       break
     case 'autoSignIn_failure':
+      console.log('autoSignInFailure')
       break
     case 'configured':
   }

@@ -4,20 +4,25 @@ import { View } from 'react-native'
 import { Edge, SafeAreaView } from 'react-native-safe-area-context'
 
 interface IProps {
-  bottomInset: boolean
-  routeName: string
+  bottomInset?: boolean
+  routeName?: string
   children?: React.ReactNode | React.ReactNode[]
 }
 const Layout = (props: IProps) => {
-  const includeBottom = props.bottomInset ? 'bottom' : undefined
-  const authScreens = ['Welcome', 'Login', 'Register', 'RegisterSecond']
+  const authScreens = [
+    'Welcome',
+    'Login',
+    'Register',
+    'RegisterSecond',
+    'Verification',
+  ]
   return (
     <View
       className={
         'flex-1 ' +
         (props.routeName === 'friends'
           ? 'bg-discord-gray-5'
-          : authScreens.includes(props.routeName)
+          : props.routeName && authScreens.includes(props.routeName)
           ? 'bg-discord-gray-2'
           : 'bg-discord-gray-3')
       }

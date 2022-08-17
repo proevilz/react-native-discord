@@ -5,7 +5,7 @@ import Layout from '../../components/Layout'
 
 const Login = ({ route, navigation }) => {
   return (
-    <Layout routeName={route.name} includeBottom>
+    <Layout routeName={route.name} bottomInset>
       <View className="flex-1 bg-discord-gray-2 items-center justify-between">
         <View className="w-full  items-center">
           <Image

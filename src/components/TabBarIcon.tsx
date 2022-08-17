@@ -3,7 +3,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import AvatarIcon from './AvatarIcon'
 import Svg, { SvgProps, G, Path, Defs, ClipPath } from 'react-native-svg'
 import { Octicons } from '@expo/vector-icons'
-const DiscordIcon = (props) => {
+const DiscordIcon = (props: { focused: boolean }) => {
   return (
     <Svg width="28" height="28" fill="none" {...props} viewBox="0 0 71 55">
       <G clipPath="url(#a)">
@@ -20,7 +20,7 @@ const DiscordIcon = (props) => {
     </Svg>
   )
 }
-const FriendsIcon = (props) => (
+const FriendsIcon = (props: { focused: boolean }) => (
   <Svg
     className="icon-2xnN2Y"
     aria-hidden="true"
@@ -39,17 +39,21 @@ const FriendsIcon = (props) => (
   </Svg>
 )
 
-const MentionsIcon = (props) => (
+const MentionsIcon = (props: { focused: boolean }) => (
   <Octicons
     name="bell-fill"
     size={21}
     color={props.focused ? '#fff' : 'gray'}
   />
 )
-
-const TabBarIcon = (props) => {
+interface IProps {
+  name: string
+  focused: boolean
+}
+const TabBarIcon = (props: IProps) => {
   const name = props.name.toLowerCase()
-  if (name === 'home') {
+
+  if (name === 'directmessages') {
     return <DiscordIcon focused={props.focused} />
   }
   if (name === 'friends') {

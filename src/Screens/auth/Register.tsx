@@ -6,13 +6,18 @@ import Layout from '../../components/Layout'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 import isEmail from 'validator/es/lib/isEmail'
 import isStrongPassword from 'validator/es/lib/isStrongPassword'
-import validator from 'validator'
-import { IFormState, validateField } from '../../utils'
+
+import {
+  EMAIL_EXISTS_DESCRIPTION,
+  IFormState,
+  validateField,
+} from '../../utils'
 import { updateRegistration } from '../../slices/authSlice'
 import { useDispatch } from 'react-redux'
 type RootStackParamList = {
   Registration: undefined
   RegisterSecond: undefined
+  Login: undefined
 }
 type Props = NativeStackScreenProps<RootStackParamList, 'Registration'>
 
@@ -41,7 +46,19 @@ const Register = ({ route, navigation }: Props) => {
         }),
     },
   })
-
+  useEffect(() => {
+    if (route.params?.error && Object.keys(route?.params?.error).length) {
+      setForm((prev) => {
+        return {
+          ...prev,
+          [route.params.error.type]: {
+            ...prev[route.params.error.type],
+            error: route.params.error.message,
+          },
+        }
+      })
+    }
+  }, [route.params])
   const handleNext = () => {
     if (validateField({ form, setForm })) {
       dispatch(
@@ -56,7 +73,10 @@ const Register = ({ route, navigation }: Props) => {
   }
   return (
     <Layout routeName={route.name} bottomInset>
-      <TouchableOpacity className="flex flex-row items-center ml-1">
+      <TouchableOpacity
+        className="flex flex-row items-center ml-1"
+        onPress={() => navigation.goBack()}
+      >
         <AntDesign name="left" size={10} color="white" />
         <Text className="ml-1 text-white font-semibold">Back</Text>
       </TouchableOpacity>
@@ -89,13 +109,23 @@ const Register = ({ route, navigation }: Props) => {
             }))
           }
         />
-        <Text
-          className={
-            'text-red-400 mt-1 ' + (!form.email.error ? ' opacity-0' : '')
-          }
-        >
-          {form.email.error}
-        </Text>
+        <View className="flex-row">
+          <Text
+            className={
+              'text-red-400 mt-1 ' + (!form.email.error ? ' opacity-0' : '')
+            }
+          >
+            {form.email.error}
+          </Text>
+          {form.email.error === EMAIL_EXISTS_DESCRIPTION && (
+            <Text
+              onPress={() => navigation.navigate('Login')}
+              className={'ml-1 text-discord mt-1 '}
+            >
+              Login?
+            </Text>
+          )}
+        </View>
       </View>
       <View className="w-full px-4 mt-3">
         <Text className="text-discord-gray-4 mb-2 font-bold">Password</Text>

@@ -13,7 +13,6 @@ export const uiSlice = createSlice({
       state.actionSheetOpen = false
     },
     openActionSheet: (state, payload) => {
-      console.log(payload)
       state.actionSheetOpen = true
       state.selectedUser = payload.payload
     },

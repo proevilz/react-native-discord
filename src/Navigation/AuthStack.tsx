@@ -1,10 +1,10 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-
 import Register from '../Screens/auth/Register'
 import Welcome from '../Screens/auth/Welcome'
 import Login from '../Screens/auth/Login'
 import RegisterSecond from '../Screens/auth/RegisterSecond'
+import Verification from '../Screens/auth/Verification'
 const Stack = createNativeStackNavigator()
 
 const AuthStack = () => {
@@ -18,6 +18,7 @@ const AuthStack = () => {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="RegisterSecond" component={RegisterSecond} />
+      <Stack.Screen name="Verification" component={Verification} />
     </Stack.Navigator>
   )
 }
