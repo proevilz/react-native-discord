@@ -1,6 +1,8 @@
-import { HubCallback, HubCapsule } from '@aws-amplify/core'
-import isEmail from 'validator/lib/isEmail'
+import { HubCapsule } from '@aws-amplify/core'
+
 import * as RootNavigation from '../src/Navigation/RootNavigation'
+export const EMAIL_EXISTS_DESCRIPTION =
+  'An account with this email already exists.'
 export const statusIdToString = (status: number) => {
   switch (status) {
     case 1:
@@ -21,11 +23,14 @@ export interface IFormState {
   }
 }
 
-interface IValidateField {
+interface IValidateRegistrationField {
   form: IFormState
   setForm: React.Dispatch<React.SetStateAction<IFormState>>
 }
-export const validateField = ({ form, setForm }: IValidateField): boolean => {
+export const validateRegistrationField = ({
+  form,
+  setForm,
+}: IValidateRegistrationField): boolean => {
   interface IErrors {
     email: null | string
     password: null | string
@@ -78,10 +83,43 @@ export const validateField = ({ form, setForm }: IValidateField): boolean => {
   }
 }
 
-export const hubListener = (data: HubCapsule) => {
+export const validateLoginField = ({ form, setForm }) => {
+  interface IErrors {
+    email: null | string
+    password: null | string
+  }
+  const errors: IErrors = {
+    email: null,
+    password: null,
+  }
+  if (!form.email.validate(form.email.value)) {
+    errors.email = 'Invalid email address format.'
+  }
+  if (!form.password.validate(form.password.value)) {
+    errors.password = 'This field is required.'
+  }
+  setForm((prev) => ({
+    ...prev,
+    email: {
+      ...prev.email,
+      error: errors.email,
+    },
+    password: {
+      ...prev.password,
+      error: errors.password,
+    },
+  }))
+  if (errors.email === null && errors.password === null) {
+    return true
+  } else {
+    return false
+  }
+}
+
+export const hubListener = (data: HubCapsule, updateAuthReady) => {
   switch (data.payload.event) {
     case 'signIn':
-      console.log('sign in! ', data.payload.data)
+      console.log('sign in! ')
       break
     case 'signUp':
       break
@@ -89,6 +127,13 @@ export const hubListener = (data: HubCapsule) => {
       break
     case 'signUp_failure':
       if (data.payload.data.name === 'UsernameExistsException') {
+        console.log('userExists')
+        RootNavigation.navigate('Register', {
+          error: {
+            type: 'email',
+            message: EMAIL_EXISTS_DESCRIPTION,
+          },
+        })
       }
       break
     case 'signIn_failure':
@@ -104,5 +149,8 @@ export const hubListener = (data: HubCapsule) => {
       console.log('autoSignInFailure')
       break
     case 'configured':
+      console.log('configured')
+      updateAuthReady()
+      break
   }
 }

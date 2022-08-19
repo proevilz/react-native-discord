@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import {
   BottomTabBar,
@@ -13,49 +13,53 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Auth } from '@aws-amplify/auth'
 import type { RootState } from '../store'
 import Friends from '../Screens/Friends'
-import { Hub } from '@aws-amplify/core'
-import { hubListener } from '../utils'
+
 import { navigationRef } from './RootNavigation'
 import { updateUser } from '../slices/authSlice'
+import useAuth from '../hooks/useAuth'
+import { View, Text } from 'react-native'
+import * as SplashScreen from 'expo-splash-screen'
 
 const Tab = createBottomTabNavigator()
-const Navigation = () => {
-  Hub.listen('auth', hubListener)
+const Navigation = ({ appIsReady }) => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.loggedIn)
   const dispatch = useDispatch()
-  React.useEffect(() => {
-    try {
-      Auth.currentUserInfo()
-        .then((data) => {
-          if (data.username) {
-            dispatch(
-              updateUser({
-                loggedIn: true,
-                user: {
-                  id: data.id,
-                  avatar:
-                    'https://cdn.discordapp.com/avatars/292729670129025025/8391c3c2d5c68e10339d2d19389cf803.webp?size=240',
-                  username: data.nickname,
-                  status: 4,
-                },
-              })
-            )
-          }
-        })
-        .catch((error) => console.log('No logged in user'))
-    } catch (error) {
-      console.log('NLU')
+  const { currentUser, loading } = useAuth()
+  console.log({ loading })
+  const hideSplashScreen = async () => {
+    await SplashScreen.hideAsync()
+  }
+  useEffect(() => {
+    if (appIsReady && currentUser?.attributes?.email) {
+      setTimeout(() => {
+        hideSplashScreen()
+      }, 500)
     }
+  }, [currentUser, appIsReady])
+  const getCurrentUser = async () => {
+    try {
+      const currentUser = await Auth.currentUserInfo()
+      console.log({ currentUser })
+      if (currentUser.username) {
+        dispatch(
+          updateUser({
+            loggedIn: true,
+            user: {
+              id: currentUser.id,
+              avatar:
+                'https://cdn.discordapp.com/avatars/292729670129025025/8391c3c2d5c68e10339d2d19389cf803.webp?size=240',
+              username: currentUser.nickname,
+              status: 4,
+            },
+          })
+        )
+      }
+    } catch (error) {}
+  }
+  useEffect(() => {
+    getCurrentUser()
   }, [])
-  React.useEffect(() => {
-    Auth.currentUserInfo()
-      .then((data) => {
-        if (data.username) {
-          //do something with data
-        }
-      })
-      .catch((error) => console.log('No logged in user'))
-  }, [])
+
   const bottomTabVisible = useSelector(
     (state: RootState) => state.bottomTabs.visible
   )
@@ -73,7 +77,7 @@ const Navigation = () => {
   })
   return (
     <NavigationContainer ref={navigationRef}>
-      {isLoggedIn ? (
+      {appIsReady === true && currentUser?.attributes?.email ? (
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ color, focused }) => (

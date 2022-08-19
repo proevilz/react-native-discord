@@ -10,13 +10,20 @@ import {
 } from '@expo-google-fonts/rubik'
 // import { io } from 'socket.io-client'
 import { store } from './src/store'
-import { Provider } from 'react-redux'
-import { Amplify } from '@aws-amplify/core'
+import { Provider, useDispatch } from 'react-redux'
+import { Amplify, Hub } from '@aws-amplify/core'
 import config from './src/aws-exports'
+import { hubListener } from './src/utils'
+import { updateAuthReady } from './src/slices/authSlice'
+import useAuth from './src/hooks/useAuth'
 
 export default function App(props) {
+  SplashScreen.preventAutoHideAsync()
   const [appIsReady, setAppIsReady] = useState(false)
+
+  Hub.listen('auth', (data) => hubListener(data, () => {}))
   Amplify.configure(config)
+  // const { currentUser, loading } = useAuth()
 
   useEffect(() => {
     async function prepare(): Promise<void> {
@@ -32,15 +39,10 @@ export default function App(props) {
         setAppIsReady(true)
       }
     }
+
     prepare()
   }, [])
   // const socket = io('ws://192.168.50.214:3000')
-
-  const onLayoutRootView = useCallback(async () => {
-    if (appIsReady) {
-      await SplashScreen.hideAsync()
-    }
-  }, [appIsReady])
 
   if (!appIsReady) {
     return null
@@ -48,8 +50,8 @@ export default function App(props) {
 
   return (
     <Provider store={store}>
-      <SafeAreaProvider onLayout={onLayoutRootView}>
-        <Navigation />
+      <SafeAreaProvider>
+        <Navigation appIsReady={appIsReady} />
       </SafeAreaProvider>
     </Provider>
   )

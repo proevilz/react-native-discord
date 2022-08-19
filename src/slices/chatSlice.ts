@@ -38,7 +38,7 @@ const initialState: IinitialState = {
           status: 1,
         },
         {
-          id: '99',
+          id: 'eu-west-2:394a62ea-4295-4e08-9472-fca10e697604',
           avatar:
             'https://cdn.discordapp.com/avatars/292729670129025025/8391c3c2d5c68e10339d2d19389cf803.webp?size=240',
           username: 'ProEvilz',
@@ -59,7 +59,7 @@ const initialState: IinitialState = {
           text: 'Cras in purus eu magna vulputate luctus.',
           createdAt: '2022-03-01T01:07:15Z',
           updatedAt: '2022-04-21T16:41:17Z',
-          authorId: '99',
+          authorId: 'eu-west-2:394a62ea-4295-4e08-9472-fca10e697604',
           conversationId: '1',
         },
         {
@@ -84,7 +84,7 @@ const initialState: IinitialState = {
           status: 4,
         },
         {
-          id: ' 99',
+          id: 'eu-west-2:394a62ea-4295-4e08-9472-fca10e697604',
           avatar:
             'https://cdn.discordapp.com/avatars/292729670129025025/8391c3c2d5c68e10339d2d19389cf803.webp?size=240',
           username: 'ProEvilz',
@@ -105,7 +105,7 @@ const initialState: IinitialState = {
           text: 'Cras in purus eu magna vulputate luctus.',
           createdAt: '2022-03-01T01:07:15Z',
           updatedAt: '2022-04-21T16:41:17Z',
-          authorId: '99',
+          authorId: 'eu-west-2:394a62ea-4295-4e08-9472-fca10e697604',
           conversationId: '1',
         },
         {

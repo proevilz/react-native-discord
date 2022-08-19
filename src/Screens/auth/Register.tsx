@@ -10,7 +10,7 @@ import isStrongPassword from 'validator/es/lib/isStrongPassword'
 import {
   EMAIL_EXISTS_DESCRIPTION,
   IFormState,
-  validateField,
+  validateRegistrationField,
 } from '../../utils'
 import { updateRegistration } from '../../slices/authSlice'
 import { useDispatch } from 'react-redux'
@@ -60,7 +60,7 @@ const Register = ({ route, navigation }: Props) => {
     }
   }, [route.params])
   const handleNext = () => {
-    if (validateField({ form, setForm })) {
+    if (validateRegistrationField({ form, setForm })) {
       dispatch(
         updateRegistration({
           email: form.email.value,
