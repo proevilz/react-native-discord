@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import {
   BottomTabBar,
@@ -13,33 +13,29 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Auth } from '@aws-amplify/auth'
 import type { RootState } from '../store'
 import Friends from '../Screens/Friends'
-
+import Splash from '../components/SplashScreen'
 import { navigationRef } from './RootNavigation'
 import { updateUser } from '../slices/authSlice'
-import useAuth from '../hooks/useAuth'
-import { View, Text } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen'
 
 const Tab = createBottomTabNavigator()
 const Navigation = ({ appIsReady }) => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.loggedIn)
+  const [currentUserDetermined, setCurrentUserDetermined] = useState(false)
   const dispatch = useDispatch()
-  const { currentUser, loading } = useAuth()
-  console.log({ loading })
+
+  // console.log({ loading })
   const hideSplashScreen = async () => {
     await SplashScreen.hideAsync()
   }
   useEffect(() => {
-    if (appIsReady && currentUser?.attributes?.email) {
-      setTimeout(() => {
-        hideSplashScreen()
-      }, 500)
+    if (appIsReady && currentUserDetermined) {
+      hideSplashScreen()
     }
-  }, [currentUser, appIsReady])
+  }, [currentUserDetermined])
   const getCurrentUser = async () => {
     try {
       const currentUser = await Auth.currentUserInfo()
-      console.log({ currentUser })
       if (currentUser.username) {
         dispatch(
           updateUser({
@@ -54,7 +50,10 @@ const Navigation = ({ appIsReady }) => {
           })
         )
       }
-    } catch (error) {}
+      setCurrentUserDetermined(true)
+    } catch (error) {
+      setCurrentUserDetermined(true)
+    }
   }
   useEffect(() => {
     getCurrentUser()
@@ -64,50 +63,50 @@ const Navigation = ({ appIsReady }) => {
     (state: RootState) => state.bottomTabs.visible
   )
 
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateY: withTiming(bottomTabVisible ? 0 : 80, {
-            duration: 200,
-          }),
-        },
-      ],
-    }
-  })
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY: withTiming(bottomTabVisible ? 0 : 80, {
+          duration: 200,
+        }),
+      },
+    ],
+  }))
   return (
-    <NavigationContainer ref={navigationRef}>
-      {appIsReady === true && currentUser?.attributes?.email ? (
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon name={route.name} color={color} focused={focused} />
-            ),
-            tabBarShowLabel: false,
-            tabBarStyle: {
-              backgroundColor: '#18191c',
-              borderTopColor: '#18191c',
-              position: 'absolute',
-            },
+    <Splash currentUserDetermined={currentUserDetermined}>
+      <NavigationContainer ref={navigationRef}>
+        {appIsReady && currentUserDetermined ? (
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ color, focused }) => (
+                <TabBarIcon name={route.name} color={color} focused={focused} />
+              ),
+              tabBarShowLabel: false,
+              tabBarStyle: {
+                backgroundColor: '#18191c',
+                borderTopColor: '#18191c',
+                position: 'absolute',
+              },
 
-            headerShown: false,
-          })}
-          tabBar={(props) => (
-            <Animated.View style={animatedStyles}>
-              <BottomTabBar {...props} />
-            </Animated.View>
-          )}
-        >
-          <Tab.Screen name="DirectMessages" component={DirectMessages} />
-          <Tab.Screen name="Friends" component={Friends} />
-          <Tab.Screen name="Search" component={Profile} />
-          <Tab.Screen name="Mentions" component={Profile} />
-          <Tab.Screen name="Profile" component={Profile} />
-        </Tab.Navigator>
-      ) : (
-        <AuthStack />
-      )}
-    </NavigationContainer>
+              headerShown: false,
+            })}
+            tabBar={(props) => (
+              <Animated.View style={animatedStyles}>
+                <BottomTabBar {...props} />
+              </Animated.View>
+            )}
+          >
+            <Tab.Screen name="DirectMessages" component={DirectMessages} />
+            <Tab.Screen name="Friends" component={Friends} />
+            <Tab.Screen name="Search" component={Profile} />
+            <Tab.Screen name="Mentions" component={Profile} />
+            <Tab.Screen name="Profile" component={Profile} />
+          </Tab.Navigator>
+        ) : (
+          <AuthStack />
+        )}
+      </NavigationContainer>
+    </Splash>
   )
 }
 

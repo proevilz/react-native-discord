@@ -1,13 +1,12 @@
-import React, { useContext, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   View,
   Text,
   TouchableOpacity,
   Dimensions,
-  TextInput,
+  FlatList,
   KeyboardAvoidingView,
 } from 'react-native'
-
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import StatusIndicator from '../components/StatusIndicator'
 import Animated, {
@@ -19,41 +18,40 @@ import Animated, {
   useSharedValue,
   Extrapolate,
   runOnJS,
-  useDerivedValue,
+  SharedValue,
 } from 'react-native-reanimated'
-import {
-  FlatList,
-  Gesture,
-  GestureDetector,
-} from 'react-native-gesture-handler'
-
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import ChatMessage from '../components/ChatMessage'
-
 import { useSelector, useDispatch } from 'react-redux'
 import { show, hide } from '../slices/bottomTabsSlice'
-import { RootState, selectors } from '../store'
+import { selectors } from '../store'
 import ChatInput from '../components/ChatInput'
+import { SkeletonLoader } from '../components/Skeleton'
 
-const Chat = ({ offset, start }) => {
+interface IProps {
+  offset: SharedValue<number>
+  start: SharedValue<number>
+}
+
+const Chat = ({ offset, start }: IProps) => {
   const screenWidth = Dimensions.get('window').width
   const screenHeight = Dimensions.get('window').height
   const { findChatParticipant, findConversation } = selectors
   const conversation = useSelector(findConversation)
-
   const user = useSelector(findChatParticipant)
 
   const dispatch = useDispatch()
   const isPressed = useSharedValue(false)
   const [scrollEnabled, setScrollEnabled] = useState(true)
-  const updatePressed = (value) => (isPressed.value = value)
-  const handleScroller = (val) => {
+  const updatePressed = (value: boolean) => (isPressed.value = value)
+  const handleScroller = (val: number) => {
     if (val != 0) {
       setScrollEnabled(false)
     } else {
       setScrollEnabled(true)
     }
   }
-  const updateBottomTabsVisibility = (value) => {
+  const updateBottomTabsVisibility = (value: boolean) => {
     if (value) {
       return dispatch(show())
     }
@@ -63,7 +61,6 @@ const Chat = ({ offset, start }) => {
     .onBegin((e) => {
       start.value = offset.value
       isPressed.value = true
-      // cancelAnimation(bottomTabVisible)
       cancelAnimation(offset)
     })
     .onUpdate((e) => {
@@ -92,13 +89,12 @@ const Chat = ({ offset, start }) => {
     .failOffsetY([-5, 5])
 
   const animatedStyles = useAnimatedStyle(() => {
+    runOnJS(handleScroller)(offset.value)
     if (offset.value == 340) {
       runOnJS(updateBottomTabsVisibility)(true)
     } else {
       runOnJS(updateBottomTabsVisibility)(false)
     }
-    runOnJS(handleScroller)(offset.value)
-
     return {
       transform: [
         {
@@ -118,6 +114,7 @@ const Chat = ({ offset, start }) => {
       } else if (offset.value === -340 || offset.value === 340) {
         return 0
       }
+      return 0
     }
     return {
       height: screenHeight + 47,
@@ -144,17 +141,12 @@ const Chat = ({ offset, start }) => {
       borderTopRightRadius: Math.floor(radius),
     }
   })
-
-  const flatList = React.useRef(null)
+  const flatListRef = useRef<FlatList>()
   return (
     <GestureDetector gesture={gesture}>
       <Animated.View
-        style={[
-          animatedStyles,
-          mAnimatedStyles,
-          { overflowX: 'hidden', height: screenHeight - 24 },
-        ]}
-        className="bg-discord-gray-2  w-full pb-12 z-10 absolute "
+        style={[animatedStyles, mAnimatedStyles, { height: screenHeight - 24 }]}
+        className="bg-discord-gray-2  w-full pb-12 z-10 absolute overflow-x-hidden "
       >
         <Animated.View
           className="bg-discord-gray-5"
@@ -176,10 +168,10 @@ const Chat = ({ offset, start }) => {
             </TouchableOpacity>
             <Text className="text-white mb-1 ml-3 mr-5 font-bold">
               <Text className="text-discord-gray-4 font-bold">@{'  '}</Text>
-              {user.username}
+              {user?.username}
             </Text>
             <View className="flex items-center pt-2">
-              <StatusIndicator bgVariant="3" status={user.status} />
+              {user && <StatusIndicator bgVariant="3" status={user.status} />}
             </View>
           </View>
           <View className="items-center flex flex-row">
@@ -194,23 +186,28 @@ const Chat = ({ offset, start }) => {
           behavior="padding"
         >
           <View className="justify-between bg-discord-gray-2 w-full h-full">
-            <FlatList
-              scrollEnabled={scrollEnabled}
-              data={conversation.messages}
-              className="h-[50px] px-2"
-              // inverted={true}
-              renderItem={({ item }) => (
-                <ChatMessage message={item} key={item.id} />
-              )}
-              ref={flatList}
-              onContentSizeChange={() => {
-                flatList.current.scrollToEnd()
-              }}
-              onLayout={() => {
-                flatList.current.scrollToEnd()
-              }}
-            />
-            <ChatInput conversationId={conversation.id} user={user} />
+            {conversation && (
+              <>
+                <FlatList
+                  scrollEnabled={scrollEnabled}
+                  data={conversation.messages}
+                  className="h-[50px] px-2"
+                  // inverted={true}
+                  renderItem={({ item }) => (
+                    <ChatMessage message={item} key={item.id} />
+                  )}
+                  ref={flatListRef}
+                  onContentSizeChange={() => {
+                    flatListRef?.current?.scrollToEnd()
+                  }}
+                  onLayout={() => {
+                    flatListRef?.current?.scrollToEnd()
+                  }}
+                />
+
+                <ChatInput conversationId={conversation.id} user={user} />
+              </>
+            )}
           </View>
         </KeyboardAvoidingView>
       </Animated.View>

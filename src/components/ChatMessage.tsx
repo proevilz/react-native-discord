@@ -8,7 +8,7 @@ const relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
 const ChatMessage = ({ message }) => {
-  console.log({ message })
+  // console.log({ message })
   const { findMessageAuthor } = selectors
   const user = useSelector((state) =>
     findMessageAuthor(state, message.authorId)

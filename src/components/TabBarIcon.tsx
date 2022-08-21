@@ -49,6 +49,7 @@ const MentionsIcon = (props: { focused: boolean }) => (
 interface IProps {
   name: string
   focused: boolean
+  color: string
 }
 const TabBarIcon = (props: IProps) => {
   const name = props.name.toLowerCase()
