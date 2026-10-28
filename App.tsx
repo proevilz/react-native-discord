@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Navigation from './src/Navigation/Navigation'
 import * as SplashScreen from 'expo-splash-screen'
@@ -12,7 +12,7 @@ import {
 import { store } from './src/store'
 import { Provider, useDispatch } from 'react-redux'
 import { Amplify, Hub } from '@aws-amplify/core'
-import config from './src/aws-exports'
+// import config from './src/aws-exports'
 import { hubListener } from './src/utils'
 import { updateAuthReady } from './src/slices/authSlice'
 import useAuth from './src/hooks/useAuth'
@@ -22,7 +22,7 @@ export default function App(props) {
   const [appIsReady, setAppIsReady] = useState(false)
 
   Hub.listen('auth', (data) => hubListener(data, () => {}))
-  Amplify.configure(config)
+  // Amplify.configure(config)
   // const { currentUser, loading } = useAuth()
 
   useEffect(() => {
